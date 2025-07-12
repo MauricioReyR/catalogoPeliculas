@@ -27,7 +27,8 @@ class Frame(tk.Frame):
         self.pack()             #Se utiliza el metodo pack de Frame(Porla herencia)
         #self.config(bg= 'green')  #Se conguriran "detalles visuales color"
 
-        self.campos_pelicula()      #Se ejecutan los campor de pelicula aca, para que lo pinte enla Ventana(Frame)
+        self.campos_pelicula()      #Se ejecutan los campos de pelicula aca, para que lo pinte enla Ventana(Frame)
+        self.deshabilitar_campos()  #Se ejecuta este método de deshabilitar los campos
 
     #Se crea una funcion para los campos de la pelicula
     def campos_pelicula(self):          #Como es u metodo de la clase Frame lleva (self)
@@ -45,33 +46,73 @@ class Frame(tk.Frame):
         self.labol_genero.grid(row= 2,column= 0, padx= 10,pady= 10)  
         
         #Entry´s de cada uno de los campos (Campos de Entrada)
-        self.entry_nombre = tk.Entry(self)          #Se crea un objeto tk.Entry
-        self.entry_nombre.config(width= 50, state= 'disabled',font= ('Arial', 12)) #configuración de los espacio de Entrada de datos
+        self.mi_nombre = tk.StringVar()             #Se Crea un Objeto Strinvar(), para Enviar y/o recibir textos
+        self.entry_nombre = tk.Entry(self, textvariable= self.mi_nombre)  #Se crea un objeto tk.Entry/// Se toma textvariable, para pasar el objeto Stringvar() creado arriba
+        self.entry_nombre.config(width= 50,font= ('Arial', 12)) #configuración de los espacio de Entrada de datos
         self.entry_nombre.grid(row= 0, column= 1, padx= 10, pady= 10,columnspan= 2) #Se configura la ubicacion en la Ventana(Frame)
-        #Entrada deDuracion
-        self.entry_duracion = tk.Entry(self)          #Se crea un objeto tk.Entry
-        self.entry_duracion.config(width= 50, state= 'disabled',font= ('Arial', 12)) #configuración de los espacio de Entrada de datos
+        #Entrada de Duracion
+        self.mi_duracion = tk.StringVar()
+        self.entry_duracion = tk.Entry(self, textvariable= self.mi_duracion)     #Se crea un objeto tk.Entry
+        self.entry_duracion.config(width= 50,font= ('Arial', 12)) #configuración de los espacio de Entrada de datos
         self.entry_duracion.grid(row= 1, column= 1, padx= 10, pady= 10,columnspan= 2)
-
-        self.entry_genero = tk.Entry(self)          #Se crea un objeto tk.Entry
-        self.entry_genero.config(width= 50, state= 'disabled',font= ('Arial', 12)) #configuración de los espacio de Entrada de datos
+        #Entrada de Genero
+        self.mi_genero = tk.StringVar()
+        self.entry_genero = tk.Entry(self, textvariable= self.mi_genero)          #Se crea un objeto tk.Entry
+        self.entry_genero.config(width= 50,font= ('Arial', 12)) #configuración de los espacio de Entrada de datos
         self.entry_genero.grid(row= 2, column= 1, padx= 10, pady= 10,columnspan= 2)
 
         #Botones de 1ra parte
-        self.boton_nuevo = tk.Button(self, text= 'Nuevo')          #Se crea un objetotipo Boton
+        self.boton_nuevo = tk.Button(self, text= 'Nuevo', command= self.habilitar_campos)  #Se crea un objetotipo Boton//Se agrega atributo command para que cuando se oprima En Boton Nuevo, se ejecute la funcion Habilitar Campos
         self.boton_nuevo.config(width= 20, font= ('Arial', 12,'bold'),
                                 fg= '#DAD5D6', bg= '#158645',
                                 cursor= 'hand2', activebackground= '#35BD6f')
         self.boton_nuevo.grid(row=4,column=0, padx= 10, pady= 10)
         #Boton Guardar
-        self.boton_guardar = tk.Button(self, text= 'Guardar')          
+        self.boton_guardar = tk.Button(self, text= 'Guardar', command= self.guardar_datos) #Se coloca command, para que se cargueel metodoGuardas datos al oprimir el boton         
         self.boton_guardar.config(width= 20, font= ('Arial', 12,'bold'),
                                 fg= '#DAD5D6', bg= '#1658A2',
                                 cursor= 'hand2', activebackground= '#3586DF')
         self.boton_guardar.grid(row=4,column=1, padx= 10, pady= 10)
-
-        self.boton_cancelar = tk.Button(self, text= 'Cancelar')          
+        #Boton Cancelar
+        self.boton_cancelar = tk.Button(self, text= 'Cancelar',command= self.deshabilitar_campos)   #Se utiliza con el metodo Deshabilitar campos          
         self.boton_cancelar.config(width= 20, font= ('Arial', 12,'bold'),
                                 fg= '#DAD5D6', bg= '#BD152E',
                                 cursor= 'hand2', activebackground= '#E15370')
         self.boton_cancelar.grid(row=4,column=2, padx= 10, pady= 10)
+
+    #Creacion de metodo para habilitar campos(Boton Nuevo)
+    def habilitar_campos(self):
+        #Se envian campos vacios, para que por medio del metodo SET cuando se habiliten sean campos vacios
+        self.mi_nombre.set('')
+        self.mi_duracion.set('')
+        self.mi_genero.set('')
+        
+        self.entry_nombre.config(state = 'normal')
+        self.entry_duracion.config(state = 'normal')
+        self.entry_genero.config(state = 'normal')
+        #Habilitar los Botones Guardar y Cancelar
+        self.boton_guardar.config(state = 'normal')
+        self.boton_cancelar.config(state = 'normal')
+
+    #Creacion de metodo para Deshabilitar campos  //Se ejecuta en el Frame
+    def deshabilitar_campos(self):
+        #Se envian campos vacios, para que por medio del metodo SET cuando se oprima Cancelar o Guardar se envien los campos
+        self.mi_nombre.set('')
+        self.mi_duracion.set('')
+        self.mi_genero.set('')
+
+        self.entry_nombre.config(state = 'disabled')
+        self.entry_duracion.config(state = 'disabled')
+        self.entry_genero.config(state = 'disabled')
+        #Deshabilitar los Botones Guardar y Cancelar
+        self.boton_guardar.config(state = 'disabled')
+        self.boton_cancelar.config(state = 'disable')
+    
+    def guardar_datos(self):
+
+
+        self.deshabilitar_campos()
+
+
+
+
