@@ -1,6 +1,7 @@
 #Archivo de Interfaz de Usuario
 import tkinter as tk
 from tkinter import ttk         #Se importa la libreria que nos ayuda con las tablas
+from model.pelicula_dao import crear_tabla, borrar_tabla #Se importa desdeel modelo la cracion y borrado de tabas (sql)
 
 #Se crea una nueva funcion para la bara de menu
 def barra_menu(root):
@@ -10,9 +11,11 @@ def barra_menu(root):
     menu_inicio = tk.Menu(barra_menu, tearoff= 0)   #Se crea el 1er Menu,se ancla a barra_menu y se eliminan lineas
     barra_menu.add_cascade(label= 'Inicio', menu= menu_inicio)     #Se agrega de la forma
 
-    #Se crea los campos internos de INICIO(En la barra de Nmenu_inicio.add_command(label= 'CREAR REGISTRO EN DB')avegacion)
-    menu_inicio.add_command(label= 'Crear Registros en la DB') 
-    menu_inicio.add_command(label= 'Eliminar registros en la DB')
+    #Se crea los campos internos de INICIO
+    # (En la barra de Menu_inicio.add_command(label= 'CREAR REGISTRO EN DB')Navegacion)
+    # Se utiliza el modelo de Creacion y Borrado de tablas, para cambiar Crear Registros en la DB y Eliminar registros en la DB
+    menu_inicio.add_command(label= 'Crear Registros en la DB', command= crear_tabla) #Se crea tabla cuando se cree un registro nuevo en la barra de Navegación
+    menu_inicio.add_command(label= 'Eliminar registros en la DB', command= borrar_tabla)    #Se elimina una tabla cuando se toque en la Barra de Navegacion
     menu_inicio.add_command(label= 'Salir', command= root.destroy)  #oton de salir en el menu/funcion de salida
 
     #Se crean los demas Menus
@@ -108,7 +111,7 @@ class Frame(tk.Frame):
         self.entry_genero.config(state = 'disabled')
         #Deshabilitar los Botones Guardar y Cancelar
         self.boton_guardar.config(state = 'disabled')
-        self.boton_cancelar.config(state = 'disable')
+        self.boton_cancelar.config(state = 'disabled')
     
     def guardar_datos(self):
         
