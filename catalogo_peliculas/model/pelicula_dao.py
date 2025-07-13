@@ -48,3 +48,58 @@ def borrar_tabla():
         messagebox.showerror(titulo, mensaje)
     #Para probar este codig, seva al gui_app.py y se realiza en la barra de menu crear registro y se 
     #realiza lo que queda marcado en ese archivo.
+
+#Se crea una tabla Pelicula,que es igual ala que esta en la tabla
+class Pelicula:
+    def __init__(self,nombre,duracion,genero):
+        #Se construye un constructor
+        self.id_pelicula = None
+        self.nombre = nombre
+        self.duracion = duracion
+        self.genero = genero
+    #Crear el estado del Objeto anterior
+    def __str__(self):
+        return f'Pelicula[{self.nombre}, {self.duracion},{self.genero}]'
+    
+#Se crea una funcion que ingresa o Guarda los datos
+def guardar(pelicula):
+    conexion = ConexionDB()
+
+    #Se hace un sql que ingresa los datos
+    sql = f"""iNSERT INTO peliculas (nombre, duracion,genero) 
+    VALUES('{pelicula.nombre}','{pelicula.duracion}','{pelicula.genero}')"""
+
+    #Se usa el Cursor para ingresar los datos
+    #Se mete este codigo en un try-Except paraque no de el error de NO creacion de la BD
+    try:
+        conexion.cursor.execute(sql)
+        conexion.cerrar()
+    except:
+        titulo = 'Conexion al Registro'
+        mensaje = 'La tabla Peliculas NO esta Creada en la BD'
+        messagebox.showerror(titulo,mensaje)
+
+    #CON ESTO SE VA A GUARDAR DATOS Y SE REALIZA
+
+#Se hace un fncion para LISTAR
+def listar():
+    conexion = ConexionDB()     #Se hace la conexion
+
+    lista_peliculas = []
+
+    sql = 'SELECT * FROM peliculas'
+
+    #Se manejan los Errores
+    try:
+        conexion.cursor.execute(sql)
+        lista_peliculas = conexion.cursor.fetchall()      #Metodo para retornar toda la lista de pelicuals
+        conexion.cerrar()
+    except:
+        titulo = ('Conexion alRegistro')
+        mensaje= ('Esta Tabla No Existe en la Base de Datos')
+        messagebox.showwarning(titulo, mensaje)
+
+    #retorna la lista_peliculas
+    return lista_peliculas
+
+    #Para mostrar la tabla, setrabaja el codigo en el Frame en tabla de peliculas se agrega:
