@@ -126,7 +126,7 @@ class Frame(tk.Frame):
 
         #Se crea el registro del objeto pelicula
         guardar(pelicula)
-        #Se actualiza la tablae el Frame
+        #Se actualiza la tabla del Frame
         self.tabla_peliculas()
 
         self.deshabilitar_campos()
