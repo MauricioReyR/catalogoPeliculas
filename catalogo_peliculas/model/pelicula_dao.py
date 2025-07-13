@@ -1,5 +1,6 @@
 #En este se haran lasconsultas de la BD//hacer el CRUD
-#from model.conexion_db import ConexionDB    #Se importa la clase ConexionDB de conexiondb
+from model.conexion_db import ConexionDB   #Se importa la clase ConexionDB de conexiondb
+
 
 #Se crea una funcion para Crearlas tablas
 def crear_tabla():
