@@ -2,6 +2,7 @@
 import tkinter as tk
 from tkinter import ttk         #Se importa la libreria que nos ayuda con las tablas
 from model.pelicula_dao import crear_tabla, borrar_tabla #Se importa desdeel modelo la cracion y borrado de tabas (sql)
+from model.pelicula_dao import Pelicula, guardar, listar    #Se importa de model.pelicula,, la clase pelicula
 
 #Se crea una nueva funcion para la bara de menu
 def barra_menu(root):
@@ -34,6 +35,7 @@ class Frame(tk.Frame):
         self.campos_pelicula()      #Se ejecutan los campos de pelicula aca, para que lo pinte enla Ventana(Frame)
         self.deshabilitar_campos()  #Se ejecuta este método de deshabilitar los campos
         self.tabla_peliculas()      #Se ejecuta aca paraque la tabla de Peliculas se muestre en la Ventan(Frame)
+
 
     #Se crea una funcion para los campos de la pelicula
     def campos_pelicula(self):          #Como es u metodo de la clase Frame lleva (self)
@@ -113,12 +115,29 @@ class Frame(tk.Frame):
         self.boton_guardar.config(state = 'disabled')
         self.boton_cancelar.config(state = 'disabled')
     
+    #Se crea un objeto de la clase Pelicula, y ese objeto se le envia a la funcion guardar
     def guardar_datos(self):
-        
+        #Se crea un objeto de la clase Pelicula
+        pelicula = Pelicula(
+            self.mi_nombre.get(),        #Se obtiene la info de el Entry Nombre
+            self.mi_duracion.get(),
+            self.mi_genero.get(),
+        )
+
+        #Se crea el registro del objeto pelicula
+        guardar(pelicula)
+        #Se actualiza la tablae el Frame
+        self.tabla_peliculas()
+
         self.deshabilitar_campos()
 
     #Diseñar la tabla para mostrar datos en el Frame(Ventana)
     def tabla_peliculas(self):
+        #Recuperala lista de peliculas, para mostrarla e el Frame
+        self.lista_peliculas = listar()
+        self.lista_peliculas.reverse()  #Se invierte la tabla
+
+
         self.tabla = ttk.Treeview(self, column = ('Nombre', 'Duracion','Genero'))   #Nombre de Columnas
         self.tabla.grid(row=4,column= 0,columnspan= 4, padx= 10, pady= 10)      #Ubicacion en la grilla
         
@@ -127,8 +146,11 @@ class Frame(tk.Frame):
         self.tabla.heading('#2', text= 'DURACION')
         self.tabla.heading('#3', text= 'GENERO')
 
+        #Iterar la lista de Peliculas
+        for p in self.lista_peliculas:
+            self.tabla.insert('',0,text=p[0], values= (p[1],p[2],p[3]))
         #INSERCION DE DATOS DE PRUEBA
-        self.tabla.insert('',0,text= '1', values= ('Los Vengadores', '2.35','Acción')) 
+        #self.tabla.insert('',0,text= '1', values= ('Los Vengadores', '2.35','Acción')) 
 
         #BOTON EDITAR
         self.boton_editar = tk.Button(self, text= 'Editar')  #Se crea un objetotipo Boton
