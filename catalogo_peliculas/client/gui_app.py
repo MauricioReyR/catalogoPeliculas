@@ -2,7 +2,8 @@
 import tkinter as tk
 from tkinter import ttk         #Se importa la libreria que nos ayuda con las tablas
 from model.pelicula_dao import crear_tabla, borrar_tabla #Se importa desdeel modelo la cracion y borrado de tabas (sql)
-from model.pelicula_dao import Pelicula, guardar, listar    #Se importa de model.pelicula,, la clase pelicula
+from model.pelicula_dao import Pelicula, guardar, listar, editar    #Se importa de model.pelicula,, la clase pelicula
+from tkinter import messagebox          #Se importa para los mensajes de Alerta en Ventana Emergentes
 
 #Se crea una nueva funcion para la bara de menu
 def barra_menu(root):
@@ -31,6 +32,8 @@ class Frame(tk.Frame):
         self.root = root        #Se crea un atributo root que recibe el root
         self.pack()             #Se utiliza el metodo pack de Frame(Porla herencia)
         #self.config(bg= 'green')  #Se conguriran "detalles visuales color"
+        #Para que cuando se edite se guarde la informacion nueva se hace:
+        self.id_pelicula = None        #Se crea el id_pelicula aca(En el Constructor del Frame)
 
         self.campos_pelicula()      #Se ejecutan los campos de pelicula aca, para que lo pinte enla Ventana(Frame)
         self.deshabilitar_campos()  #Se ejecuta este método de deshabilitar los campos
@@ -123,9 +126,12 @@ class Frame(tk.Frame):
             self.mi_duracion.get(),
             self.mi_genero.get(),
         )
-
-        #Se crea el registro del objeto pelicula
-        guardar(pelicula)
+        #Se hace una condicional para que se pueden editar los datos de la tabla
+        if self.id_pelicula == None:
+            guardar(pelicula)       #Se crea el registro del objeto pelicula
+        else:
+            editar(pelicula, self.id_pelicula)
+        
         #Se actualiza la tabla del Frame
         self.tabla_peliculas()
 
@@ -139,7 +145,15 @@ class Frame(tk.Frame):
 
 
         self.tabla = ttk.Treeview(self, column = ('Nombre', 'Duracion','Genero'))   #Nombre de Columnas
-        self.tabla.grid(row=4,column= 0,columnspan= 4, padx= 10, pady= 10)      #Ubicacion en la grilla
+        self.tabla.grid(row=4,column= 0,columnspan= 4,padx= 10,pady= 10, sticky= 'nse')      #Ubicacion en la grilla, sticky= 'nse' para configurar el Scrollbar
+
+        #Scrollbar para el Frame cuando pasa de 10 Registros de pelicula
+        self.scroll = ttk.Scrollbar(self,            #Hereda de ttk//se colocan paramétros
+                                   orient= 'vertical',command= self.tabla.yview) #orient, se ve vertical, command, yview, 
+                                  #para que se muestre en la tabla
+        self.scroll.grid(row= 4, column= 4, sticky= 'nse')     #row 4 por que ahi esta la tabla, column 4 porque esa esla fila final, sticky= 'nse'para que el Scroll quede dentro de la tabla
+        self.tabla.configure(yscrollcommand= self.scroll.set)   #Configuracion del scroll bar en la tabla
+
         
         self.tabla.heading('#0', text= 'ID')
         self.tabla.heading('#1', text= 'NOMBRE')
@@ -153,7 +167,7 @@ class Frame(tk.Frame):
         #self.tabla.insert('',0,text= '1', values= ('Los Vengadores', '2.35','Acción')) 
 
         #BOTON EDITAR
-        self.boton_editar = tk.Button(self, text= 'Editar')  #Se crea un objetotipo Boton
+        self.boton_editar = tk.Button(self, text= 'Editar', command= self.editar_datos)  #Se crea un objeto tipo Boton
         self.boton_editar.config(width= 20, font= ('Arial', 12,'bold'),
                                 fg= '#DAD5D6', bg= '#158645',cursor= 'hand2', activebackground= '#35BD6f')
         self.boton_editar.grid(row=5,column=0, padx= 10, pady= 10)
@@ -163,3 +177,28 @@ class Frame(tk.Frame):
         self.boton_eliminar.config(width= 20, font= ('Arial', 12,'bold'),fg= '#DAD5D6', bg= '#BD152E',
                                 cursor= 'hand2', activebackground= '#E15370')
         self.boton_eliminar.grid(row=5,column=1, padx= 10, pady= 10)
+
+        #Para recuperar los datos de la tabla para Editarlos
+    def editar_datos(self):
+        try:
+            #Recuperar el texto de la tabla
+            self.id_pelicula = self.tabla.item(self.tabla.selection())['text']
+            self.nombre_pelicula = self.tabla.item(
+                self.tabla.selection())['values'][0]
+            self.duracion_pelicula = self.tabla.item(
+                self.tabla.selection())['values'][1]
+            self.genero_pelicula = self.tabla.item(
+                self.tabla.selection())['values'][2]
+            
+            #Se habilitan los campos
+            self.habilitar_campos()
+
+            #Se envian los nuevos datos a los Entrye´s
+            self.entry_nombre.insert(0, self.nombre_pelicula)
+            self.entry_duracion.insert(0, self.duracion_pelicula)
+            self.entry_genero.insert(0, self.genero_pelicula)
+        #Se envia la Excepción
+        except:
+            titulo = 'Edicion de Datos'
+            mensaje = 'No ha seleccionado ningun registro'
+            messagebox.showerror(titulo,mensaje)

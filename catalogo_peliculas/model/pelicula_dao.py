@@ -102,4 +102,24 @@ def listar():
     #retorna la lista_peliculas
     return lista_peliculas
 
-    #Para mostrar la tabla, setrabaja el codigo en el Frame en tabla de peliculas se agrega:
+    #Para mostrar la tabla, se trabaja el codigo en el Frame en tabla de peliculas se agrega:
+
+#Se crea una funcion para editar los Registros creados en la Base de Datos
+def editar(pelicula, id_pelicula):    #Se pasa como parametros el objeto pelicula y el identificador de cada pelicula
+        conexion = ConexionDB() #Se conectala BD
+
+        #Se crea el sql
+        sql = f"""UPDATE peliculas
+        SET nombre = '{pelicula.nombre}', duracion = '{pelicula.duracion}',
+        genero = '{pelicula.genero}'
+        WHERE id_pelicula = {id_pelicula} """   #idpelicula es un valor entero, no entre comillas simples
+
+        try:
+            conexion.cursor.execute(sql)
+            conexion.cerrar()
+        except:
+            titulo = 'Edicion de Datos'
+            mensaje = 'No se ha podido editrar este registro'
+            messagebox.showerror(titulo,mensaje)
+
+    
