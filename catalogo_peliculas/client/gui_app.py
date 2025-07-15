@@ -105,6 +105,8 @@ class Frame(tk.Frame):
 
     #Creacion de metodo para Deshabilitar campos  //Se ejecuta en el Frame
     def deshabilitar_campos(self):
+        #Sereinicin los Campos
+        self.id_pelicula = None
         #Se envian campos vacios, para que por medio del metodo SET cuando se oprima Cancelar o Guardar se envien los campos
         self.mi_nombre.set('')
         self.mi_duracion.set('')
@@ -213,7 +215,9 @@ class Frame(tk.Frame):
             eliminar(self.id_pelicula)
 
             # Actualizar la tabla después de eliminar
-            self.tabla_peliculas()            
+            self.tabla_peliculas()
+            #Vaciar los campor y reiniciar el ID
+            self.id_pelicula = None            
         except:
             titulo = 'Eliminar un Registro'
             mensaje = 'No ha seleccionado Ningun Registro'
