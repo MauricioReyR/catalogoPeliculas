@@ -122,4 +122,18 @@ def editar(pelicula, id_pelicula):    #Se pasa como parametros el objeto pelicul
             mensaje = 'No se ha podido editrar este registro'
             messagebox.showerror(titulo,mensaje)
 
+def eliminar(id_pelicula):
+    conexion = ConexionDB()
+
+    #Se crea el sql
+    sql = f"""DELETE FROM peliculas WHERE id_pelicula = {id_pelicula}"""
+
+    #Se hace la Excepcion si no esta la Pelicula  
+    try:
+        conexion.cursor.execute(sql)
+        conexion.cerrar()
+    except:
+        titulo = 'Eliminar de Datos'
+        mensaje = 'No se ha podido Eliminar este registro'
+        messagebox.showerror(titulo,mensaje)
     

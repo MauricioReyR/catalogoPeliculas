@@ -1,9 +1,8 @@
 #Archivo de Interfaz de Usuario
 import tkinter as tk
-from tkinter import ttk         #Se importa la libreria que nos ayuda con las tablas
+from tkinter import ttk, messagebox          #Se importa la libreria que nos ayuda con las tablas//Se importa para los mensajes de Alerta en Ventana Emergentes
 from model.pelicula_dao import crear_tabla, borrar_tabla #Se importa desdeel modelo la cracion y borrado de tabas (sql)
-from model.pelicula_dao import Pelicula, guardar, listar, editar    #Se importa de model.pelicula,, la clase pelicula
-from tkinter import messagebox          #Se importa para los mensajes de Alerta en Ventana Emergentes
+from model.pelicula_dao import Pelicula, guardar, listar, editar, eliminar   #Se importa de model.pelicula,, la clase pelicula
 
 #Se crea una nueva funcion para la bara de menu
 def barra_menu(root):
@@ -173,7 +172,7 @@ class Frame(tk.Frame):
         self.boton_editar.grid(row=5,column=0, padx= 10, pady= 10)
 
         #BOTON ELIMINAR
-        self.boton_eliminar = tk.Button(self, text= 'Eliminar')             
+        self.boton_eliminar = tk.Button(self, text= 'Eliminar', command= self.eliminar_datos)    #Metodo de eliminar, para aplicar en el boton        
         self.boton_eliminar.config(width= 20, font= ('Arial', 12,'bold'),fg= '#DAD5D6', bg= '#BD152E',
                                 cursor= 'hand2', activebackground= '#E15370')
         self.boton_eliminar.grid(row=5,column=1, padx= 10, pady= 10)
@@ -197,8 +196,25 @@ class Frame(tk.Frame):
             self.entry_nombre.insert(0, self.nombre_pelicula)
             self.entry_duracion.insert(0, self.duracion_pelicula)
             self.entry_genero.insert(0, self.genero_pelicula)
+
+            # Actualizar la tabla después de eliminar
+            self.tabla_peliculas()
         #Se envia la Excepción
         except:
             titulo = 'Edicion de Datos'
             mensaje = 'No ha seleccionado ningun registro'
+            messagebox.showerror(titulo,mensaje)
+    
+    #Se crea luna funcion de eliminar los datos
+    def eliminar_datos(self):
+        try:
+            #Recuperar el texto de la tabla
+            self.id_pelicula = self.tabla.item(self.tabla.selection())['text']
+            eliminar(self.id_pelicula)
+
+            # Actualizar la tabla después de eliminar
+            self.tabla_peliculas()            
+        except:
+            titulo = 'Eliminar un Registro'
+            mensaje = 'No ha seleccionado Ningun Registro'
             messagebox.showerror(titulo,mensaje)
