@@ -1,16 +1,21 @@
 #Este modulo va a contener la clase de conexion a la Base de Datos
-import sqlite3      #Paquete que se utiliza para bases de Datos de SQLITE
+import sqlite3
+import os
+import sys
 
-#Se crea la CLASE COnexion
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
 class ConexionDB:
-    #Se crea el constructor de la clase ConexionDB
     def __init__(self):
-        #Se coloca como atributo el nombre de la Base de Datos
-        self.base_datos = 'database/peliculas.db'   #Se crea (SI NO existe) la base de Datos llamada peliculas, en la carpeta Database
-        self.conexion = sqlite3.connect(self.base_datos)       #Se crea un atributo que crea la Conexion
-        self.cursor = self.conexion.cursor()    #Se crea un cursor, Que sirve para escribir y/o modificar la BD
-           
+        self.base_datos = resource_path('database/peliculas.db')
+        self.conexion = sqlite3.connect(self.base_datos)
+        self.cursor = self.conexion.cursor()
 
     def cerrar(self):
-        self.conexion.commit()      #Se realizaun Commit de lomodificado en la BD
-        self.conexion.close()       #Se cierra la conexion con la BD
+        self.conexion.commit()
+        self.conexion.close()
